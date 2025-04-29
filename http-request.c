@@ -2,9 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <curl/curl.h>
+#include <unistd.h>
+
+#define RESPONSE_SIZE 10000
+#define USER_PROMPT_SIZE 1000
 
 #define API_KEY "sk-a28c21f3656e411c9b7d7b2a00c635d1"  // <-- Replace with your actual key
 #define API_URL "https://api.deepseek.com/v1/chat/completions"
+#define PY_PATH "/Library/Frameworks/Python.framework/Versions/3.11/bin/python3"
 
 static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
@@ -13,18 +18,38 @@ static size_t write_callback(void *contents, size_t size, size_t nmemb, void *us
 }
 
 int main() {
+    char user_prompt[USER_PROMPT_SIZE];
+    fprintf(stdout, "Enter prompt: \n");
+    while (fgets(user_prompt, USER_PROMPT_SIZE, stdin) <= 0) {
+        fprintf(stderr, "Enter prompt: \n");
+    }
+
+
     FILE *fp = fopen("ai-out.json", "w");
     CURL *curl;
     CURLcode res;
 
-    char response[10000] = {0}; // Adjust size based on expected response
-
+    char response[RESPONSE_SIZE] = {0}; // Adjust size based on expected response
+    
+    /*
     const char *json_data =
         "{"
         "\"model\": \"deepseek-chat\","
         "\"messages\": [{\"role\": \"user\", \"content\": \"Hello, tell me a joke\"}],"
         "\"temperature\": 0.7"
-        "}";
+        "}"; */
+    size_t len = strlen(user_prompt);
+    if (len > 0 && user_prompt[len - 1] == '\n') {
+        user_prompt[len - 1] = '\0';  // Remove the newline
+    }
+
+    char json_data[1024];
+    snprintf(json_data, sizeof(json_data), 
+            "{"
+            "\"model\": \"deepseek-chat\","
+            "\"messages\": [{\"role\": \"user\", \"content\": \"%s\"}],"
+            "\"temperature\": 0.7"
+            "}", user_prompt);
 
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
@@ -47,6 +72,27 @@ int main() {
 
         if (res == CURLE_OK) {
             fprintf(fp, "%s", response);
+            fclose(fp);
+            int r = fork();
+            if (r < 0) {
+                perror("fork failed");
+                exit(1);
+            } else if (r == 0) {
+                // Extract data from json file
+                execl(PY_PATH, "python3", "read-json.py", NULL);
+                perror("Failed extraction");
+                exit(1);
+            } else {
+                int status;
+                if (wait(&status) == -1) {
+                    perror("wait");
+                    exit(1);
+                }
+
+                if (!WIFEXITED(status)) {
+                    fprintf(stderr, "Child never terminated");
+                }
+            }
             
         } else {
             fprintf(stderr, "Request failed: %s\n", curl_easy_strerror(res));
@@ -57,6 +103,6 @@ int main() {
     }
 
     curl_global_cleanup();
-    fclose(fp);
+    
     return 0;
 }
