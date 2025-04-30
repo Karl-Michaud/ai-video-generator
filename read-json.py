@@ -15,7 +15,7 @@ def _setup_json(file_name: str) -> dict | None:
             return json.load(json_file)
     except FileNotFoundError as error:
         print("Error opening file", file=sys.stderr)
-        _exit(1)
+        sys.exit(1)
 
 
 def _setup_write(file_name: str, data: str) -> None:
@@ -27,7 +27,7 @@ def _setup_write(file_name: str, data: str) -> None:
             file.write(data)
     except FileNotFoundError as error:
         print("Error opening file", file=sys.stderr)
-        _exit(1)
+        sys.exit(1)
 
 
 def extract_message(json_file: str, out_file: str) -> None:
@@ -36,7 +36,11 @@ def extract_message(json_file: str, out_file: str) -> None:
     data to specified out_file.
     """
     data = _setup_json(json_file)
-    _setup_write(out_file, data["choices"][0]["message"]["content"])
+    try:
+        _setup_write(out_file, data["choices"][0]["message"]["content"])
+    except KeyError as error:
+        print("API key is invalid", file=sys.stderr)
+        sys.exit(1);
     return
 
 
