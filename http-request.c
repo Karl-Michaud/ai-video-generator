@@ -7,9 +7,10 @@
 #define RESPONSE_SIZE 10000
 #define USER_PROMPT_SIZE 1000
 
-#define API_KEY "sk-a28c21f3656e411c9b7d7b2a00c635d1"  // <-- Replace with your actual key
 #define API_URL "https://api.deepseek.com/v1/chat/completions"
-#define PY_PATH "/Library/Frameworks/Python.framework/Versions/3.11/bin/python3"
+
+const char *API_KEY;
+const char *PY_PATH;
 
 static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp) {
     size_t realsize = size * nmemb;
@@ -18,6 +19,10 @@ static size_t write_callback(void *contents, size_t size, size_t nmemb, void *us
 }
 
 int main() {
+    // Set env variables
+    API_KEY = getenv("API_KEY");
+    PY_PATH = getenv("PYTHON_PATH");
+
     char user_prompt[USER_PROMPT_SIZE];
     fprintf(stdout, "Enter prompt: \n");
     while (fgets(user_prompt, USER_PROMPT_SIZE, stdin) <= 0) {
