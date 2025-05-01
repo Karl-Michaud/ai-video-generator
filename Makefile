@@ -14,7 +14,8 @@ FFMPEG_PATH = $(shell which ffmpeg)
 KEY = "PLACEHOLDER"
 #############################################################
 
-all: install setup-env text_to_audio http-request
+
+all: text_to_audio http-request prompt-to-audio
 
 text_to_audio: text_to_audio.o
 	$(CC) $(FLAGS) $@ $<
@@ -22,11 +23,18 @@ text_to_audio: text_to_audio.o
 http-request: http-request.o
 	$(CC) $(FLAGS) $@ $< $(CURL_FLAGS_LINK)
 
+prompt-to-audio: prompt-to-audio.o
+	$(CC) $(FLAGS) $@ $<
+
 text_to_audio.o: text_to_audio.c
 	$(CC) $(FLAGS_OBJECT) $<
 
 http-request.o: http-request.c
 	$(CC) $(FLAGS_OBJECT) $< $(CURL_FLAGS_COMP)
+
+prompt-to-audio.o: prompt-to-audio.c
+	$(CC) $(FLAGS_OBJECT) $<
+
 
 setup-env:
 	# Comment lines below, and uncomment, if using bash.
