@@ -61,4 +61,4 @@ clean_audio:
 	rm -rf *.wav *.mp3 *.aiff
 
 clean_all: clean_audio
-	rm -rf *.o text_to_audio http-request
+	rm -rf *.o text_to_audio http-request prompt-to-audio
