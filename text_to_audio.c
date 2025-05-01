@@ -6,17 +6,19 @@
 
 #include <fcntl.h> // For open sys call
 
-#define MAX_CHARS 500
+#define MAX_CHARS 1000
 
-#define OUTPUT_FILE "--output-file=output.aiff"
-//#define OUTPUT_VOICE "--voice=Daniel" // default female voice --voice=Samantha
-#define OUTPUT_VOICE "--voice=Samantha"
+#define OUTPUT_FILE_FLAG "--output-file=output.aiff"
+#define OUTPUT_VOICE "--voice=Daniel" // default female voice --voice=Samantha
+//#define OUTPUT_VOICE "--voice=Samantha"
 
 #define NUM_FLAGS 2
 #define MP3_FLAG "-mp3"
 #define WAV_FLAG "-wav"
 
-char *valid_flags[NUM_FLAGS] = {MP3_FLAG, WAV_FLAG};
+const char *FFMPEG_PATH;
+const char *SAY_PATH;
+const char *valid_flags[NUM_FLAGS] = {MP3_FLAG, WAV_FLAG};
 
 /*
  * Function used to display to stderr improper usage message, and exit in case of usage error.
@@ -58,6 +60,10 @@ char *audio_converter(char *type) {
 }
 
 int main(int argc, char *argv[]) {
+    // Get environmental variable. Since getenv is not a compile-time constant, it must execute during running time.
+    FFMPEG_PATH = getenv("FFMPEG_PATH");
+    SAY_PATH = getenv("SAY_PATH");
+
     if (argc < 2 || argc > 3) {
         improper_usage_exit();
     }
@@ -132,9 +138,9 @@ int main(int argc, char *argv[]) {
             if (pid_con == 0) {
                 // Convert audio
                 printf("Converting audio to %s\n", argv[1]);
-                execl("/usr/local/bin/ffmpeg", "ffmpeg","-i", "output.aiff", out_file, NULL);
+                execl(FFMPEG_PATH, "ffmpeg","-i", "output.aiff", out_file, NULL);
 
-                fprintf(stderr,"Audio Conversion failed\n");
+                perror("Audio Conversion failed");
                 free(out_file);
                 exit(1);
 
@@ -180,10 +186,10 @@ int main(int argc, char *argv[]) {
         buffer[bytes_read] = '\0';
 
         // say --output-file=test.aiff [text]
-        execl("/usr/bin/say", "say", OUTPUT_VOICE, OUTPUT_FILE, buffer, NULL);
+        execl(SAY_PATH, "say", OUTPUT_VOICE, OUTPUT_FILE_FLAG, buffer, NULL);
 
         // In case execl fails
-        fprintf(stderr, "Text to Audio conversion failed\n");
+        perror("Text to Audio conversion failed");
         exit(1);
     }
     return 0;
