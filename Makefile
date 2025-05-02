@@ -15,7 +15,7 @@ KEY = "PLACEHOLDER"
 #############################################################
 
 
-all: text_to_audio http-request prompt-to-audio
+all: text_to_audio http-request prompt-to-video
 
 text_to_audio: text_to_audio.o
 	$(CC) $(FLAGS) $@ $<
@@ -23,7 +23,7 @@ text_to_audio: text_to_audio.o
 http-request: http-request.o
 	$(CC) $(FLAGS) $@ $< $(CURL_FLAGS_LINK)
 
-prompt-to-audio: prompt-to-audio.o
+prompt-to-video: prompt-to-video.o
 	$(CC) $(FLAGS) $@ $<
 
 text_to_audio.o: text_to_audio.c
@@ -32,7 +32,7 @@ text_to_audio.o: text_to_audio.c
 http-request.o: http-request.c
 	$(CC) $(FLAGS_OBJECT) $< $(CURL_FLAGS_COMP)
 
-prompt-to-audio.o: prompt-to-audio.c
+prompt-to-video.o: prompt-to-video.c
 	$(CC) $(FLAGS_OBJECT) $<
 
 
@@ -61,4 +61,4 @@ clean_audio:
 	rm -rf *.wav *.mp3 *.aiff
 
 clean_all: clean_audio
-	rm -rf *.o text_to_audio http-request prompt-to-audio
+	rm -rf *.o text_to_audio http-request prompt-to-video
