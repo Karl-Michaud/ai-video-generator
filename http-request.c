@@ -49,6 +49,11 @@ int main() {
     API_KEY = getenv("API_KEY");
     PY_PATH = getenv("PYTHON_PATH");
 
+    if (API_KEY == NULL || PY_PATH == NULL) {
+        fprintf(stderr, "Make sure to add environmental variables. Check Makefile for steps.\n");
+        exit(1);
+    }
+
     char user_prompt[USER_PROMPT_SIZE] = {'\0'};  // Guarantee null termination
     // Old code
     /*fprintf(stdout, "Enter prompt: \n");
@@ -67,8 +72,8 @@ int main() {
     CURL *curl;
     CURLcode res;
 
-    char response[RESPONSE_SIZE] = {0}; // Adjust size based on expected response
-    
+    char response[RESPONSE_SIZE + 100] = {'\0'};// Adjust size based on expected response
+    strcmp(response, "This is a script for my short form content video. So i want you to introduce the video with 1 sentence. Finally, I just want the script, nothing else. I do not want anything that is not script, not even a sentence of the form: Here is your script OR This is the end of the script. I just want the script. Also do not use any emoji or special character (chars that are not punctuation or letters of the alphabet or numers)");
     
     char *safe_prompt = escape_json_string(user_prompt);
     
@@ -133,6 +138,6 @@ int main() {
     }
 
     curl_global_cleanup();
-    
+    free(safe_prompt);
     return 0;
 }

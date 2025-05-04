@@ -26,6 +26,10 @@
 
 typedef char choice_t; // Either set to y or n
 
+
+/*
+ * Function merges audio with produced video.
+ */ 
 void merge_video() {
     // ffmpeg -stream_loop -1 -i ./videos/mine_vid.mp4 -i output.aiff \
     // -map 0:v:0 -map 1:a:0 \
@@ -108,7 +112,7 @@ int main(int argc, char *argv[]) {
     char buff[BUFF_SIZE];
     while (choice != 'y') {
         printf("Enter video script prompt: \n");
-        while (fgets(buff, sizeof(buff), stdin) == NULL) {
+        while (fgets(buff, sizeof(buff), stdin) == 0) {
             fprintf(stderr, "Enter valid prompt: \n");
         }
 
@@ -171,6 +175,7 @@ int main(int argc, char *argv[]) {
                     }
                     size_t bytes_read;
                     while ((bytes_read = fread(answer, 1, sizeof(buff), fp)) > 0) {
+                        printf("\nAI generated script:\n");
                         fwrite(answer, 1, bytes_read, stdout);
                     }
 

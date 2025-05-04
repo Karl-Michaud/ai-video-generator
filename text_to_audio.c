@@ -63,6 +63,10 @@ int main(int argc, char *argv[]) {
     // Get environmental variable. Since getenv is not a compile-time constant, it must execute during running time.
     FFMPEG_PATH = getenv("FFMPEG_PATH");
     SAY_PATH = getenv("SAY_PATH");
+    if (FFMPEG_PATH == NULL || SAY_PATH == NULL) {
+        fprintf(stderr, "Make sure to add environmental variables. Check Makefile for steps.\n");
+        exit(1);
+    }
 
     if (argc < 2 || argc > 3) {
         improper_usage_exit();
@@ -138,7 +142,7 @@ int main(int argc, char *argv[]) {
             if (pid_con == 0) {
                 // Convert audio
                 printf("Converting audio to %s\n", argv[1]);
-                execl(FFMPEG_PATH, "ffmpeg","-i", "output.aiff", out_file, NULL);
+                execl(FFMPEG_PATH, "ffmpeg","y", "-i", "output.aiff", out_file, NULL);
 
                 perror("Audio Conversion failed");
                 free(out_file);

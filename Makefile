@@ -1,4 +1,4 @@
-.PHONY: clean_audio clean_all all install setup-env
+.PHONY: clean_audio clean all install setup-env
 
 CC = gcc
 FLAGS_OBJECT = -Wall -c
@@ -9,6 +9,7 @@ CURL_FLAGS_LINK = $(shell curl-config --libs)
 PYTHON_PATH = $(shell which python3)
 SAY_PATH = $(shell which say)
 FFMPEG_PATH = $(shell which ffmpeg)
+WHISPER_PATH = $(shell which whisper)
 
 ############# Enter API Key for deepseek ai #################
 KEY = "PLACEHOLDER"
@@ -26,6 +27,9 @@ http-request: http-request.o
 prompt-to-video: prompt-to-video.o
 	$(CC) $(FLAGS) $@ $<
 
+add-subs: add-subs.o
+	$(CC) $(FLAGS) $@ $<
+
 text_to_audio.o: text_to_audio.c
 	$(CC) $(FLAGS_OBJECT) $<
 
@@ -35,6 +39,8 @@ http-request.o: http-request.c
 prompt-to-video.o: prompt-to-video.c
 	$(CC) $(FLAGS_OBJECT) $<
 
+add-subs.o: add-subs.c
+	$(CC) $(FLAGS_OBJECT) $<
 
 setup-env:
 	# Comment lines below, and uncomment, if using bash.
@@ -42,6 +48,7 @@ setup-env:
 	# echo export FFMPEG_PATH=\"$(FFMPEG_PATH)\" >> ~/.bashrc
 	# echo export PYTHON_PATH=\"$(PYTHON_PATH)\" >> ~/.bashrc
 	# echo export SAY_PATH=\"$(SAY_PATH)\" >> ~/.bashrc
+	# echo export WHISPER_PATH=\"$(WHISPER_PATH)\" >> ~/.bashrc	
 	# @echo "TYPE THE FOLLOWING: source ~/.bashrc"
 
 	# For zsh terminal (Used by Macos)
@@ -49,6 +56,7 @@ setup-env:
 	echo export FFMPEG_PATH=\"$(FFMPEG_PATH)\" >> ~/.zshrc
 	echo export PYTHON_PATH=\"$(PYTHON_PATH)\" >> ~/.zshrc
 	echo export SAY_PATH=\"$(SAY_PATH)\" >> ~/.zshrc
+	echo export WHISPER_PATH=\"$(WHISPER_PATH)\" >> ~/.zshrc
 	@echo "TYPE THE FOLLOWING: source ~/.zshrc"
 
 		
@@ -60,5 +68,5 @@ install:
 clean_audio:
 	rm -rf *.wav *.mp3 *.aiff
 
-clean_all: clean_audio
-	rm -rf *.o text_to_audio http-request prompt-to-video
+clean: clean_audio
+	rm -rf *.o text_to_audio http-request prompt-to-video add-subs *.srt *.ass
