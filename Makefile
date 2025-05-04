@@ -16,7 +16,7 @@ KEY = "PLACEHOLDER"
 #############################################################
 
 
-all: text_to_audio http-request prompt-to-video
+all: text_to_audio http-request prompt-to-video add-subs
 
 text_to_audio: text_to_audio.o
 	$(CC) $(FLAGS) $@ $<

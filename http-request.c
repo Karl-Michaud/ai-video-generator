@@ -71,11 +71,28 @@ int main() {
     FILE *fp = fopen("ai-out.json", "w");
     CURL *curl;
     CURLcode res;
-
-    char response[RESPONSE_SIZE + 100] = {'\0'};// Adjust size based on expected response
-    strcmp(response, "This is a script for my short form content video. So i want you to introduce the video with 1 sentence. Finally, I just want the script, nothing else. I do not want anything that is not script, not even a sentence of the form: Here is your script OR This is the end of the script. I just want the script. Also do not use any emoji or special character (chars that are not punctuation or letters of the alphabet or numers)");
     
-    char *safe_prompt = escape_json_string(user_prompt);
+    const char* VIDEO_SCRIPT_PROMPT =
+        "You are an internet personality creating short-form viral content. Follow these rules STRICTLY: "
+        "1. Respond ONLY with the video script text. "
+        "2. No questions, emojis or engagement hooks. "
+        "3. Never address the user (no <Ask me more>, <would you like>, or <let me know if>). "
+        "4. If the prompt relates to reddit stories, or similar, the length may exceed 60 seconds if necessary. "
+        "5. Total length: 30-60 seconds of spoken content. "
+        "6. Be engaging. Have a sentence introducing the subject. "
+        "7. Never include anything beyond the script itself. "
+        "8. If I ever read, <Would you like...> or <Let me know if...>, I will implode and die. "
+        "9. If rules are broken, I will die, so better not include: <Would you like more details on any of these? 😊> or similar engagement hooks.\n"
+        "Here is the prompt: ";
+
+    char response[RESPONSE_SIZE] = {'\0'};// Adjust size based on expected response
+
+    char new_prompt[USER_PROMPT_SIZE + 300] = {'\0'};
+    strcpy(new_prompt, VIDEO_SCRIPT_PROMPT);
+    strcat(new_prompt, user_prompt);
+    new_prompt[sizeof(new_prompt) - 1] = '\0';
+
+    char *safe_prompt = escape_json_string(new_prompt);
     
     int size_json = strlen(safe_prompt) + 100;
     char json_data[size_json];
@@ -85,6 +102,7 @@ int main() {
             "\"messages\": [{\"role\": \"user\", \"content\": \"%s\"}],"
             "\"temperature\": 0.7"
             "}", safe_prompt);
+
 
     curl_global_init(CURL_GLOBAL_ALL);
     curl = curl_easy_init();
@@ -136,7 +154,6 @@ int main() {
         curl_slist_free_all(headers);
         curl_easy_cleanup(curl);
     }
-
     curl_global_cleanup();
     free(safe_prompt);
     return 0;

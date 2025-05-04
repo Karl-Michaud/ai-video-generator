@@ -10,6 +10,7 @@
 #define OUT_AUDIO "output.aiff"
 #define IN_VIDEO "./videos/mine_vid.mp4"
 #define OUT_VIDEO "./videos/output.mp4"
+#define OUT_VIDEO_SUBS "./videos/output-with-subs.mp4"
 
 // Uncomment to have audio file converted to wav or mp3:
 // #define AUDIO "-wav"
@@ -18,13 +19,45 @@
 #define DEFINED 1
 #else
 #define DEFINED 0
-#define AUDIO "Undefined" // This will not affect the code since not defined, but necessary for compilation as the macro did not exist before
+// This will not affect the code since not defined, but necessary for compilation as the macro did not exist before
+#define AUDIO "Undefined" 
 #endif
 
 #define BUFF_SIZE 1028
 #define ANS_BUFF_SIZE 5000
 
 typedef char choice_t; // Either set to y or n
+
+
+/*
+ * Function adds subtitles to produced video.
+ */ 
+void add_subs() {
+    pid_t pid_c;
+    pid_c = fork();
+    if (pid_c < 0) {
+        perror("Fork failed");
+        exit(1);
+    } else if (pid_c == 0) {
+        printf("Adding subtitles...");
+        execl("./add-subs", "add-subs", OUT_VIDEO, OUT_VIDEO_SUBS, NULL);
+        perror("Execl failed. Subtitles unsuccessfully added");
+        exit(1);
+    } else {
+        int status_c;
+        if (wait(&status_c) == -1) {
+            perror("Wait failed");
+            exit(1);
+        }
+        if (WIFEXITED(status_c)) {
+            if (WEXITSTATUS(status_c) == 1) {
+                perror("Error. Video subtitles failed to be added");
+                exit(1);
+            }
+        }
+        printf("Completed generating the video!");
+    }
+}
 
 
 /*
@@ -42,7 +75,11 @@ void merge_video() {
     } else if (pid_c == 0) {
         printf("Making video.");
         char *FFMPEG_PATH = getenv("FFMPEG_PATH");
-        execl(FFMPEG_PATH, "ffmpeg", "-stream_loop", "-1", "-i", IN_VIDEO, "-i", OUT_AUDIO, "-map", "0:v:0", 
+        if (FFMPEG_PATH == NULL) {
+            fprintf(stderr, "Consult Makefile for proper environmental variable setup\n");
+            exit(1);
+        }
+        execl(FFMPEG_PATH, "ffmpeg", "-y", "-stream_loop", "-1", "-i", IN_VIDEO, "-i", OUT_AUDIO, "-map", "0:v:0", 
                 "-map", "1:a:0", "-c:v", "libx264", "-c:a", "aac", "-shortest", OUT_VIDEO, NULL);
         perror("Execl failed. Video unsuccessfully made");
         exit(1);
@@ -191,7 +228,9 @@ int main(int argc, char *argv[]) {
                     } else {
                         convert_prompt_to_audio();
                         
-                        merge_video(); 
+                        merge_video();
+
+                        add_subs();
                     }
                     
                }
