@@ -1,6 +1,6 @@
 # 🎬 AI Video Generator
 
-This repository contains an **AI Video Generator**, a C-based tool that automates short-form content video creation using AI. It includes standalone programs for AI prompting, text-to-speech, subtitle generation, and audio/video merging; all combined in one master program for content generation.
+This repository contains my **AI Video Generator**, a C-based tool that automates short-form content video creation using AI. It includes standalone programs for AI prompting, text-to-speech, subtitle generation, and audio/video merging; all combined in one master program for content generation.
 
 This master program is ideal for creating quick AI-powered video content without any subscriptions or extra tools. Just write an idea, confirm the script, and let it do the rest. 🚀
 
