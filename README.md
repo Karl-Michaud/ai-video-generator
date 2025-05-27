@@ -7,11 +7,11 @@ This master program is ideal for creating quick AI-powered video content without
 
 ## 📚 Table of Contents
 
-- [Overview](#overview)
-- [Installation Instructions](#installation-instructions)
-- [Standalone Programs](#standalone-programs)
-- [Master Program](#master-program)
-- [Bug Reports & Feature Suggestions](#bug-reports--feature-suggestions)
+- [Overview](#-overview)
+- [Installation Instructions](#-installation-instructions)
+- [Standalone Programs](#-standalone-programs)
+- [Master Program](#-master-program)
+- [Bug Reports & Feature Suggestions](#-bug-reports--feature-suggestions)
 - [License](#license)
 
 
