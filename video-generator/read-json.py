@@ -2,8 +2,8 @@ import json
 import os
 import sys
 
-JSON_FILE = "ai-out.json"
-OUTPUT_FILE = "ai-out"
+JSON_FILE = "./IO/ai-out.json"
+OUTPUT_FILE = "./IO/ai-out"
 
 
 def _setup_json(file_name: str) -> dict | None:
