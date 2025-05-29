@@ -16,7 +16,7 @@ KEY = "PLACEHOLDER"
 #############################################################
 
 
-all: text_to_audio http-request prompt-to-video add-subs merge-audio
+all: text_to_audio http-request prompt-to-video add-subs merge-audio auto-generate-video
 
 text_to_audio: text_to_audio.o
 	$(CC) $(FLAGS) $@ $<
@@ -33,6 +33,9 @@ add-subs: add-subs.o
 merge-audio: merge-audio.o
 	$(CC) $(FLAGS) $@ $<
 
+auto-generate-video: auto-generate-video.o
+	$(CC) $(FLAGS) $@ $<
+
 text_to_audio.o: text_to_audio.c
 	$(CC) $(FLAGS_OBJECT) $<
 
@@ -46,6 +49,9 @@ add-subs.o: add-subs.c
 	$(CC) $(FLAGS_OBJECT) $<
 
 merge-audio.o: merge-audio.c
+	$(CC) $(FLAGS_OBJECT) $<
+
+auto-generate-video.o: auto-generate-video.c
 	$(CC) $(FLAGS_OBJECT) $<
 
 setup-env:
@@ -70,7 +76,8 @@ setup-env:
 install:
 	brew install ffmpeg
 	brew install curl  
-
+	pip3 install openai-whisper 
+	#Simply pip install for non MacOS systems
 
 clean: 
-	rm -rf *.o text_to_audio http-request prompt-to-video add-subs merge-audio *.srt *.ass
+	rm -rf *.o text_to_audio http-request prompt-to-video add-subs merge-audio auto-generate-video *.srt *.ass
