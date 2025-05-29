@@ -16,7 +16,7 @@
 
 #define OUT_VIDEO "./videos/output.mp4"
 #define OUT_VIDEO_SUBS "./videos/output-with-subs" // Note: This is intentional, since we will append "i.mp4" for 1 <= i <= #lines in input file
-#define DEFAULT_VIDEO "./videos/mine_vid.mp4"
+#define DEFAULT_VIDEO "path-to-default-video.mp4"
 
 
 char *IN_VIDEO;
