@@ -1,5 +1,7 @@
 # 🎬 AI Video Generator
 
+> 🚨 **New Feature:** Added `auto-generate-video.c` — automatically generates multiple videos from a `.txt` file of ideas.
+
 This repository contains my **AI Video Generator**, a C-based tool that automates short-form content video creation using AI. It includes standalone programs for AI prompting, text-to-speech, subtitle generation, and audio/video merging; all combined in one master program for content generation.
 
 This master program is ideal for creating quick AI-powered video content without any subscriptions or extra tools. Just write an idea, confirm the script, and let it do the rest. 🚀
@@ -11,16 +13,17 @@ This master program is ideal for creating quick AI-powered video content without
 - [Installation Instructions](#-installation-instructions)
 - [Standalone Programs](#-standalone-programs)
 - [Master Program](#-master-program)
+- [Auto Batch Generator](#-auto-batch-generator)
 - [Bug Reports & Feature Suggestions](#-bug-reports--feature-suggestions)
 - [License](#license)
 
 
 ## 📖 Overview
 
-This project includes **4 standalone programs** and **1 master program**:
+This project includes **4 standalone programs** and **2 automation program**:
 
 1. Each **standalone program** can be used independently for its specific functionality.
-2. The **master program** (`prompt-to-video.c`) ties everything together into an automated AI-powered video generation pipeline.
+2. The **automation programs** (`prompt-to-video.c` and `auto-generate-video.c`) combine everything into automated AI-powered video generation workflows.
 
 Originally made to avoid overpriced tools and test my C skills, this project uses:
 - **C** as the primary language
@@ -57,6 +60,7 @@ This installs:
 
 - `ffmpeg` – for video/audio processing
 - `curl` – for HTTP requests
+- `Whisper` – for subtitle generation
 
 > ⚠️ Requires Homebrew (for macOS)
 
@@ -95,8 +99,9 @@ source ~/.bashrc
 ### Step 5: Build All Executables
 
 ```bash
-make all
+make
 ```
+Note: `make all` is an equivalent command
 
 This compiles all the programs:
 
@@ -105,8 +110,19 @@ This compiles all the programs:
 - `add-subs`
 - `merge-audio`
 - `prompt-to-video`
+- `auto-generate-video`
 
 You're now ready to use the tools individually or together through `prompt-to-video`.
+
+#### 🧹 Keep Your Directory Tidy
+
+If your directory gets too cluttered, you can run:
+
+```bash
+make clean
+```
+
+This deletes all the files produced by `make`, including executables. Be sure to recompile everything before next use (See step 5)!
 
 ---
 ## 🧱 Standalone Programs
@@ -186,6 +202,21 @@ This method lets you pick any video file on the fly.
 ⚠️ The final video will be saved automatically in the `/video-generator/videos` directory.
 
 
+## 🚀 Auto Batch Generator
+
+A new feature! The program `auto-generate-video.c` automates video creation by reading ideas line-by-line from a `.txt` file and generating a corresponding video for each idea. Each output video file is indexed in the order the idea was read.
+
+### Usage
+
+```bash
+./auto-generate-video <input.txt> <background-video-path.mp4>
+```
+
+- If no background video path is specified, define the `DEFAULT_VIDEO` macro at the top of the source file with the default video path.
+
+- The program produces indexed video files (inside `/video-generator/videos` directory) corresponding to each line in the input text file.
+
+---
 ## 🐛 Bug Reports & Feature Suggestions
 
 If you encounter any bugs or have ideas for new features, feel free to open an issue in the [Issues](../../issues) section.
