@@ -6,6 +6,9 @@ This repository contains my **AI Video Generator**, a C-based tool that automate
 
 This master program is ideal for creating quick AI-powered video content without any subscriptions or extra tools. Just write an idea, confirm the script, and let it do the rest. 🚀
 
+Watch demo: [demo link](https://www.youtube.com/watch?v=zG2cQttr1HY)
+Watch example output: [example link](https://www.youtube.com/shorts/JotiCqzSpaE)
+
 
 ## 📚 Table of Contents
 
